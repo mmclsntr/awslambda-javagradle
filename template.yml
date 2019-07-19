@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    AWS Lambda Java with Gradle
+
+Globals:
+    Function:
+        Timeout: 20
+
+Resources:
+  PostGreetingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: build/distributions/awslambda-javagradle.zip
+      Handler: awslambda.javagradle.Handler::handleRequest
+      Runtime: java8
+      Events:
+        GetOrder:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /
+            Method: post
+
+Outputs:
+    ApiEndpoint:
+      Description: "API Gateway endpoint URL for Prod stage"
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
+    PostGreetingFunction:
+      Description: "PostGreeting Lambda Function ARN"
+      Value: !GetAtt PostGreetingFunction.Arn
